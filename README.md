@@ -35,6 +35,5 @@ fun main() {
 ``` 
 
 ## References:
-ONNX pre-trained models: https://github.com/QIN2DIM/hcaptcha-challenger
-
+ONNX pre-trained models: https://github.com/QIN2DIM/hcaptcha-challenger <br>
 OpenCV for Java: https://github.com/bytedeco/javacv 
