@@ -1,6 +1,6 @@
-package com.github.gerard.solutions
+package fr.gerard.hclassifier.solutions
 
-open class YoloModel(prefix: String = "yolov5s6"): Model(prefix) {
+open class YoloOnnxModel(prefix: String = "yolov5s6"): OnnxModel(prefix) {
 
     private var classes = listOf(
         "person",

@@ -1,4 +1,4 @@
-package com.github.gerard.solutions.core;
+package fr.gerard.hclassifier.solutions.core;
 
 import org.jetbrains.annotations.NotNull;
 import org.opencv.core.Core;

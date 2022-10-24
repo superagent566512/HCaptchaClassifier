@@ -1,4 +1,4 @@
-package com.github.gerard.solutions
+package fr.gerard.hclassifier.solutions
 
 import java.io.DataInputStream
 import java.io.File
@@ -7,7 +7,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.nio.file.Paths
 
-abstract class Model(private val prefix: String) {
+abstract class OnnxModel(private val prefix: String) {
 
     val modelsDir = File(Paths.get("").toFile().absolutePath, "models").also { it.mkdirs() }
     val modelPath = File(modelsDir, "$prefix.onnx")

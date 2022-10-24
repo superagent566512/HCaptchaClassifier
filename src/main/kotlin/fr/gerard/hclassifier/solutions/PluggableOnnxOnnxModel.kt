@@ -1,12 +1,12 @@
-package com.github.gerard.solutions
+package fr.gerard.hclassifier.solutions
 
-import com.github.gerard.solutions.core.Onnx
+import fr.gerard.hclassifier.solutions.core.Onnx
 import org.opencv.core.Size
 import java.io.File
 import java.io.FileOutputStream
 import kotlin.io.path.createTempDirectory
 
-class OnnxModel(val prefix: String) : Model(prefix) {
+class PluggableOnnxOnnxModel(val prefix: String) : OnnxModel(prefix) {
 
     override fun predict(imageBytes: ByteArray): Boolean {
         val imagesDir = createTempDirectory("hcaptcha-%s".format(System.currentTimeMillis())).toFile()

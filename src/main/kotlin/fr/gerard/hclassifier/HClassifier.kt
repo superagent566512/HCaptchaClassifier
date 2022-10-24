@@ -1,11 +1,12 @@
-package com.github.gerard
+package fr.gerard.hclassifier
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
-import com.github.gerard.solutions.Model
-import com.github.gerard.solutions.OnnxModel
-import com.github.gerard.solutions.YoloModel
+import fr.gerard.hclassifier.solutions.OnnxModel
+import fr.gerard.hclassifier.solutions.PluggableOnnxOnnxModel
+import fr.gerard.hclassifier.solutions.YoloOnnxModel
 import java.io.BufferedReader
+import java.io.ByteArrayOutputStream
 import java.io.InputStreamReader
 import java.net.URL
 
@@ -13,8 +14,8 @@ import java.net.URL
 class HClassifier {
 
     private val labelAliases = HashMap<String, HashMap<String, String>>()
-    private val yolo = YoloModel()
-    private val onnxModels = HashMap<String, OnnxModel>()
+    private val yolo = YoloOnnxModel()
+    private val pluggableOnnxModels = HashMap<String, PluggableOnnxOnnxModel>()
 
     init {
         labelAliases["en"] = mapOf(
@@ -44,7 +45,7 @@ class HClassifier {
             val aliases = map["label_alias"] as Map<*, *>
 
             aliases.forEach { (prefix, value) ->
-                val model = OnnxModel(prefix as String)
+                val model = PluggableOnnxOnnxModel(prefix as String)
                 model.update(false)
                 val langs = value as Map<*, *>
 
@@ -60,19 +61,33 @@ class HClassifier {
                     }
                 }
 
-                onnxModels[model.prefix] = model
+                pluggableOnnxModels[model.prefix] = model
             }
         }
     }
 
-    private fun switchModel(label: String, lang: String = "en"): Model {
+    private fun switchModel(label: String, lang: String = "en"): OnnxModel {
         val alias = labelAliases[lang]?.get(label) ?: throw NotImplementedError(label)
-        return onnxModels.getOrDefault(alias, null) ?: yolo
+        return pluggableOnnxModels.getOrDefault(alias, null) ?: yolo
     }
 
     fun predict(image: ByteArray, label: String, lang: String = "en"): Boolean {
         val model = switchModel(label, lang)
         return model.predict(image)
+    }
+
+    fun predict(imageUrl: String, label: String, lang: String = "en"): Boolean {
+        val url = URL(imageUrl)
+        val byteArray = ByteArrayOutputStream()
+
+        url.openStream().use { inputStream ->
+            var n: Int
+            val buffer = ByteArray(1024)
+            while (-1 != inputStream.read(buffer).also { n = it }) {
+                byteArray.write(buffer, 0, n)
+            }
+        }
+        return predict(byteArray.toByteArray(), label, lang)
     }
 
 }
